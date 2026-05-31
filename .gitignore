@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+
+dist/
+build/
+*.egg-info/
+
+mock_sandbox/
+security_audit_report.json
+
+.vscode/
+*.code-workspace
