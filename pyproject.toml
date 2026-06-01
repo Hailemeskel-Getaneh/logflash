@@ -25,4 +25,4 @@ logflash = "logflash.cli:main"
 
 [tool.setuptools]
 package-data = {"logflash" = ["rules/*.json", "rules/*.yaml"]}
-include_package_data = true
+include-package-data = true
