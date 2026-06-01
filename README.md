@@ -103,19 +103,4 @@ These examples illustrate how a static analysis engine can surface real‑world 
 
 [GitHub Repository](https://github.com/Hailemeskel-Getaneh/logflash)
 
-## Course Project – Software Security Course
 
-This repository was prepared as the final project for the **Software Security** course. It demonstrates:
-
-- A **modular SAST engine** capable of scanning multiple language files for common vulnerabilities.
-- **Rich‑styled CLI output** with colour coding, a progress spinner, and a `--version` flag for a polished user experience.
-- A **mock sandbox** that generates vulnerable example files, allowing the instructor to see the tool in action without any external code.
-- An extensible **rule system** (JSON/YAML) that can be overridden or expanded, showcasing secure coding patterns and how to detect them.
-- Full **CI/CD workflow** (GitHub Actions) that runs tests, builds the package, and publishes to PyPI.
-- Proper **documentation** (README, rule schema) and a clean packaging setup (`pyproject.toml`, `dist/` artifacts).
-
-The project is hosted on GitHub, where the instructor can review the commit history, the implemented features, and the CI pipeline:
-
-[GitHub Repository](https://github.com/Hailemeskel-Getaneh/logflash)
-
-Feel free to explore the code, run the tool, and assess the security scanning capabilities demonstrated here.
