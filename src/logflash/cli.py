@@ -103,8 +103,24 @@ def export_json_report(findings):
 def main():
     parser = argparse.ArgumentParser(description="logflash: A Modular SAST Engine")
     parser.add_argument("target", nargs="?", help="Target directory or file to scan (Leave empty to run mock sandbox)")
-    parser.add_argument("--version", action="version", version="logflash 0.1.0")
+    parser.add_argument("--rules", help="Path to a directory containing .json rule files (overrides built-in rules).")
     args = parser.parse_args()
+
+    # Load custom rules if provided
+    if args.rules:
+        import json, pathlib, re
+        custom_rules = []
+        rules_dir = pathlib.Path(args.rules)
+        for rule_file in rules_dir.glob("*.json"):
+            with rule_file.open(encoding="utf-8") as f:
+                data = json.load(f)
+                for rule in data:
+                    rule["regex"] = re.compile(rule["regex"])
+                custom_rules.extend(data)
+        # Override the default rule set
+        from logflash import rules as rules_module
+        rules_module.VULNERABILITY_RULES = custom_rules
+
 
     target_path = args.target
 

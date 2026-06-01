@@ -1,5 +1,7 @@
 import os
 import re
+import pathlib
+from logflash.parsers import get_parser_for_ext
 from logflash.rules import VULNERABILITY_RULES
 
 class AegisScanner:
@@ -66,32 +68,36 @@ class AegisScanner:
         return False, in_block_comment
 
     def scan_file(self, file_path):
-        """Streams file line-by-line and applies regex engine."""
-        _, ext = os.path.splitext(file_path)
-        try:
-            with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
-                self.files_scanned += 1
-                in_block_comment = False
-                for line_number, line in enumerate(f, start=1):
-                    is_comment, in_block_comment = self._is_comment(line, in_block_comment, ext)
-                    
-                    if is_comment:
-                        continue
+        """Scans a file using a language‑specific parser and applies the rule set.
 
-                    # Apply rules
-                    for rule in VULNERABILITY_RULES:
-                        if ext in rule["target_extensions"]:
-                            if rule["regex"].search(line):
-                                self.findings.append({
-                                    "rule_id": rule["rule_id"],
-                                    "vulnerability_name": rule["vulnerability_name"],
-                                    "severity_rating": rule["severity_rating"],
-                                    "target_file": file_path,
-                                    "line_number": line_number,
-                                    "offending_code_snippet": line.strip()[:100], # Truncate if too long
-                                    "vulnerability_description": rule["vulnerability_description"],
-                                    "remediation_guideline": rule["remediation_guideline"]
-                                })
+        The parser returns a list of raw findings (line number, snippet, type).
+        Each finding is then matched against all loaded vulnerability rules.
+        """
+        _, ext = os.path.splitext(file_path)
+        parser = get_parser_for_ext(ext)
+        if not parser:
+            # Unsupported file type – skip
+            return
+        try:
+            self.files_scanned += 1
+            raw_findings = parser(pathlib.Path(file_path))
+            for raw in raw_findings:
+                for rule in self.rules:
+                    if ext in rule.get("target_extensions", []):
+                        if rule["regex"].search(raw["snippet"]):
+                            self.findings.append({
+                                "rule_id": rule["rule_id"],
+                                "vulnerability_name": rule["vulnerability_name"],
+                                "severity_rating": rule["severity_rating"],
+                                "target_file": file_path,
+                                "line_number": raw["line"],
+                                "offending_code_snippet": raw["snippet"],
+                                "vulnerability_description": rule["vulnerability_description"],
+                                "remediation_guideline": rule["remediation_guideline"],
+                            })
+        except Exception as e:
+            print(f"[ERROR] Parser error for {file_path}: {e}")
+            return
         except OSError as e:
             print(f"Error reading file {file_path}: {e}")
 

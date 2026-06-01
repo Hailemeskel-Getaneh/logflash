@@ -1,0 +1,38 @@
+[
+  {
+    "rule_id": "SEC-CWE-120",
+    "vulnerability_name": "Buffer Overflow (Unbounded Copy)",
+    "severity_rating": "CRITICAL",
+    "target_extensions": [".c", ".cpp", ".h"],
+    "regex": "\\b(gets|strcpy|sprintf|strcat)\\s*\\(",
+    "vulnerability_description": "Use of low-level, non-bounds-checking memory allocation or string array operations.",
+    "remediation_guideline": "CRITICAL: Replace with safe, length-enforced bounds checking execution boundaries (e.g., fgets(), strncpy(), snprintf())."
+  },
+  {
+    "rule_id": "SEC-CWE-89",
+    "vulnerability_name": "SQL Injection (Dynamic Query)",
+    "severity_rating": "HIGH",
+    "target_extensions": [".py", ".java", ".php", ".js"],
+    "regex": "(?i)(?:SELECT\\s+.+\\s+FROM|INSERT\\s+INTO|UPDATE\\s+.+\\s+SET|DELETE\\s+FROM).*(?:\\+[\\s]*[a-zA-Z_]|\\.[\\s]*\\$|\\{.*\\}|\\$\\{.*\\}|\\$_(GET|POST|REQUEST))",
+    "vulnerability_description": "Dynamic construction of database query commands utilizing string concatenation or direct variable interpolation.",
+    "remediation_guideline": "HIGH: Structural security failure. Abandon dynamic string parsing. Enforce the implementation of Parameterized Queries or Prepared Statement Interfaces exclusively."
+  },
+  {
+    "rule_id": "SEC-CWE-79",
+    "vulnerability_name": "Cross-Site Scripting (XSS)",
+    "severity_rating": "MEDIUM",
+    "target_extensions": [".php", ".html", ".js", ".py"],
+    "regex": "(\\.innerHTML\\s*=|document\\.write\\s*\\(|echo\\s+\\$_(GET|POST))",
+    "vulnerability_description": "Unsanitized rendering sinks where user-controlled input parameter streams are passed directly into the DOM or echoed to the client.",
+    "remediation_guideline": "MEDIUM: Apply context-aware HTML entity output encoding or run data payloads through a trusted sanitization abstraction layer before browser serialization."
+  },
+  {
+    "rule_id": "SEC-CWE-798",
+    "vulnerability_name": "Exposed Secrets / Hardcoded Credentials",
+    "severity_rating": "HIGH",
+    "target_extensions": [".env", ".py", ".js", ".json", ".yml"],
+    "regex": "(?i)(api_key|secret_key|password|db_password|private_key)\\s*[:=]\\s*[\"\\'][a-zA-Z0-9_-]{7,}[\"\\']",
+    "vulnerability_description": "Hardcoded assignment strings where variables indicative of secrets are directly assigned literal string values longer than 6 alphanumeric characters.",
+    "remediation_guideline": "HIGH: Private credential exposed in raw code layout. Migrate token parameters out of code assets and securely inject them via System Environment Variables or Secrets Vaults."
+  }
+]

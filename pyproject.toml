@@ -13,7 +13,10 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = []
+dependencies = ["PyYAML>=6.0", "pytest>=7.0"]
 
 [project.scripts]
 logflash = "logflash.cli:main"
+[tool.setuptools]
+package-data = {"logflash" = ["rules/*.json"]}
+include_package_data = true
