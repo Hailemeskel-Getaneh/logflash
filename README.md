@@ -88,3 +88,34 @@ MIT License – feel free to use this in commercial or open‑source projects.
 ---
 
 *Feel free to ⭐ the repository if you find it useful!*
+
+## Security Use Cases
+
+The **logflash** tool can be used to demonstrate and detect common security weaknesses in a controlled environment:
+
+- **Buffer overflow** – Scans C/C++ source files for unsafe functions like `gets`, `strcpy`, and highlights the vulnerable line.
+- **SQL injection** – Detects string‑interpolated queries in Python (e.g., `f"SELECT * FROM users WHERE id = {user_id}"`).
+- **Cross‑site scripting (XSS)** – Finds unsanitized output in PHP files such as `echo $_GET['name'];`.
+- **Exposed secrets** – Flags hard‑coded API keys or passwords in JavaScript configuration files.
+- **Mock sandbox** – Running `logflash` without arguments creates a temporary project with intentionally vulnerable examples (C++, Python, PHP, JS) so you can see the findings instantly.
+
+These examples illustrate how a static analysis engine can surface real‑world vulnerabilities, making it a useful teaching aid for software security courses or security‑focused code reviews.
+
+[GitHub Repository](https://github.com/Hailemeskel-Getaneh/logflash)
+
+## Course Project – Software Security Course
+
+This repository was prepared as the final project for the **Software Security** course. It demonstrates:
+
+- A **modular SAST engine** capable of scanning multiple language files for common vulnerabilities.
+- **Rich‑styled CLI output** with colour coding, a progress spinner, and a `--version` flag for a polished user experience.
+- A **mock sandbox** that generates vulnerable example files, allowing the instructor to see the tool in action without any external code.
+- An extensible **rule system** (JSON/YAML) that can be overridden or expanded, showcasing secure coding patterns and how to detect them.
+- Full **CI/CD workflow** (GitHub Actions) that runs tests, builds the package, and publishes to PyPI.
+- Proper **documentation** (README, rule schema) and a clean packaging setup (`pyproject.toml`, `dist/` artifacts).
+
+The project is hosted on GitHub, where the instructor can review the commit history, the implemented features, and the CI pipeline:
+
+[GitHub Repository](https://github.com/Hailemeskel-Getaneh/logflash)
+
+Feel free to explore the code, run the tool, and assess the security scanning capabilities demonstrated here.
