@@ -4,6 +4,9 @@ import json
 import argparse
 from logflash.engine import AegisScanner
 from logflash.rules import SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW
+from rich.console import Console
+console = Console()
+from importlib import metadata
 
 def setup_mock_sandbox():
     """Programmatically creates a temporary folder with mock vulnerable files."""
@@ -104,7 +107,11 @@ def main():
     parser = argparse.ArgumentParser(description="logflash: A Modular SAST Engine")
     parser.add_argument("target", nargs="?", help="Target directory or file to scan (Leave empty to run mock sandbox)")
     parser.add_argument("--rules", help="Path to a directory containing .json rule files (overrides built-in rules).")
+parser.add_argument("-v", "--version", action="store_true", help="Show package version and exit")
     args = parser.parse_args()
+if args.version:
+    console.print(f"logflash {metadata.version('logflash')}")
+    sys.exit(0)
 
     # Load custom rules if provided
     if args.rules:
@@ -125,14 +132,14 @@ def main():
     target_path = args.target
 
     if not target_path:
-        print("[INFO] No target path provided. Initializing Mock Sandbox...")
+        console.print("[INFO] No target path provided. Initializing Mock Sandbox...")
         target_path = setup_mock_sandbox()
 
     if not os.path.exists(target_path):
-        print(f"[ERROR] Target path '{target_path}' does not exist.")
+        console.print(f"[ERROR] Target path '{target_path}' does not exist.")
         sys.exit(1)
 
-    print(f"\n[INFO] Starting logflash on target: {target_path}\n")
+    console.print(f"\n[INFO] Starting logflash on target: {target_path}\n")
     
     def print_progress(current, total, file_path):
         # Simple progress bar – same as before but with a rotating spinner
@@ -150,7 +157,8 @@ def main():
     findings = scanner.run(progress_callback=print_progress)
     
     # Clear the progress line before printing the report
-    sys.stdout.write("\r" + " " * 80 + "\r")
+    # Clear progress line
+sys.stdout.write("\r" + " " * 80 + "\r")
     sys.stdout.flush()
     
     generate_console_report(findings, scanner.files_scanned)

@@ -9,6 +9,11 @@ class AegisScanner:
         self.target_path = target_path
         self.findings = []
         self.files_scanned = 0
+        # Load the rule set so that scanning can match patterns
+        self.rules = VULNERABILITY_RULES
+        # Use rich for pretty error output
+        from rich.console import Console
+        self.console = Console()
 
     def get_supported_extensions(self):
         extensions = set()
@@ -96,10 +101,10 @@ class AegisScanner:
                                 "remediation_guideline": rule["remediation_guideline"],
                             })
         except Exception as e:
-            print(f"[ERROR] Parser error for {file_path}: {e}")
+            self.console.print(f"[bold red]Parser error for {file_path}: {e}[/]")
             return
         except OSError as e:
-            print(f"Error reading file {file_path}: {e}")
+            self.console.print(f"[bold red]Error reading file {file_path}: {e}[/]")
 
     def run(self, progress_callback=None):
         """Executes the scanning pipeline."""
